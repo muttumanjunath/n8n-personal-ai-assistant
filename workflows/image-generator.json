@@ -1,0 +1,244 @@
+{
+  "name": "Image Generator (Cloudflare + fallback)",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "connections": {
+    "Image Request": {
+      "main": [
+        [
+          {
+            "node": "Cloudflare FLUX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudflare FLUX": {
+      "main": [
+        [
+          {
+            "node": "Base64 to Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fallback Pollinations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback Pollinations": {
+      "main": [
+        [
+          {
+            "node": "Result Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base64 to Image": {
+      "main": [
+        [
+          {
+            "node": "Send Cloudflare Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cloudflare Image": {
+      "main": [
+        [
+          {
+            "node": "Result Cloudflare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "id": "0c598ec9-898a-43ed-9f3c-53c79782483f",
+      "name": "Image Request",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "prompt",
+              "type": "string"
+            },
+            {
+              "name": "caption",
+              "type": "string"
+            },
+            {
+              "name": "chatId",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3a8759fa-25d8-42a2-aea0-047bf15c92f0",
+      "name": "Cloudflare FLUX",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudflare.com/client/v4/accounts/YOUR_CLOUDFLARE_ACCOUNT_ID/ai/run/@cf/black-forest-labs/flux-1-schnell",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: $json.prompt, steps: 6 }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "onError": "continueErrorOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Cloudflare AI"
+        }
+      }
+    },
+    {
+      "id": "c0cd4e11-3d30-48de-9d9d-2ba6407fa64b",
+      "name": "Fallback Pollinations",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        420
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "sendPhoto",
+        "chatId": "={{ $(\"Image Request\").item.json.chatId || \"YOUR_TELEGRAM_USER_ID\" }}",
+        "binaryData": false,
+        "file": "=https://image.pollinations.ai/prompt/{{ encodeURIComponent($(\"Image Request\").item.json.prompt) }}?width=1024&height=1024&nologo=true&model=flux&seed={{ Math.floor(Math.random() * 1000000) }}",
+        "additionalFields": {
+          "caption": "={{ $(\"Image Request\").item.json.caption || \"\" }}"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "797478f6-cafc-4ab4-a1cd-a50617a941e3",
+      "name": "Result Fallback",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        420
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r2",
+              "name": "result",
+              "value": "Cloudflare unavailable (quota or error); image generated with Pollinations fallback and sent to Telegram.",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "51a61d0c-6ae0-48e2-b5cd-586a500d1843",
+      "name": "Base64 to Image",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        200
+      ],
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "result.image"
+      }
+    },
+    {
+      "id": "6daa5ea0-e345-4bd4-bf11-955ee732491f",
+      "name": "Send Cloudflare Image",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        200
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "sendPhoto",
+        "chatId": "={{ $(\"Image Request\").item.json.chatId || \"YOUR_TELEGRAM_USER_ID\" }}",
+        "binaryData": true,
+        "binaryPropertyName": "data",
+        "additionalFields": {
+          "caption": "={{ $(\"Image Request\").item.json.caption || \"\" }}",
+          "fileName": "image.jpg"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "3cf50870-3871-46d1-9c39-69ca944baf86",
+      "name": "Result Cloudflare",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        200
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "result",
+              "value": "Image generated with Cloudflare FLUX and sent to Telegram.",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "pinData": {}
+}

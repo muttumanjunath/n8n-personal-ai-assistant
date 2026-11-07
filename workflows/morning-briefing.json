@@ -1,0 +1,279 @@
+{
+  "name": "Morning Briefing (Telegram)",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "connections": {
+    "Every Morning 07:30": {
+      "main": [
+        [
+          {
+            "node": "Fetch Unread 2001",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rosenheim Weather": {
+      "main": [
+        [
+          {
+            "node": "Write Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Briefing": {
+      "main": [
+        [
+          {
+            "node": "Send to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Unread 2001": {
+      "main": [
+        [
+          {
+            "node": "Collect 2001",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect 2001": {
+      "main": [
+        [
+          {
+            "node": "Fetch Unread 9321",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Unread 9321": {
+      "main": [
+        [
+          {
+            "node": "Collect 9321",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect 9321": {
+      "main": [
+        [
+          {
+            "node": "Rosenheim Weather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "id": "09fd6d13-cca0-4858-9eab-f88520f85608",
+      "name": "Every Morning 07:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 7,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "562ecb7f-3d56-44f6-8c62-3db913f1b30e",
+      "name": "Fetch Unread 2001",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "returnAll": false,
+        "limit": 20,
+        "simple": true,
+        "filters": {
+          "q": "is:unread newer_than:1d in:inbox -category:promotions -category:social",
+          "readStatus": "unread"
+        }
+      },
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 2001"
+        }
+      }
+    },
+    {
+      "id": "d3fdb233-78a9-4dab-81ba-753ef8d54a24",
+      "name": "Collect 2001",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "emails"
+      }
+    },
+    {
+      "id": "9b4a1847-46bf-4624-8dbc-423687f0766f",
+      "name": "Rosenheim Weather",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=47.8571&longitude=12.1181&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&timezone=Europe%2FBerlin&forecast_days=1"
+      },
+      "executeOnce": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "e03a053c-8ed1-4f04-bff1-ac8f28ae7350",
+      "name": "Write Briefing",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        300
+      ],
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "=Write Muttu's morning briefing for {{ $now.setZone(\"Europe/Berlin\").toFormat(\"cccc, dd LLLL yyyy\") }}.\n\nWEATHER Rosenheim today (Open-Meteo JSON, WMO weather codes): {{ JSON.stringify($json.daily ?? \"unavailable\") }}\n\nUNREAD EMAILS last 24h, MAIN account main.account@gmail.com (JSON): {{ JSON.stringify(($(\"Collect 2001\").item.json.emails || []).filter(e => e.Subject || e.From).map(e => ({ from: e.From, subject: e.Subject, snippet: (e.snippet || \"\").slice(0, 160) }))) }}\n\nUNREAD EMAILS last 24h, SECOND account second.account@gmail.com (JSON): {{ JSON.stringify(($(\"Collect 9321\").item.json.emails || []).filter(e => e.Subject || e.From).map(e => ({ from: e.From, subject: e.Subject, snippet: (e.snippet || \"\").slice(0, 160) }))) }}\n\nFormat (Telegram, short, no greeting fluff):\n**Good morning Muttu ☀️** + date\n**Weather:** one line (min/max °C, rain chance, sky in plain words with a fitting emoji; never show the numeric weather code)\n**📧 Main (2001):** bullets with sender + one-line gist, urgent ones (university, exams, deadlines, job applications, interviews, security alerts) first and marked ❗. Skip newsletters/marketing. If none: \"inbox clear\".\n**📧 Second (9321):** same format.\n**Other unread:** one line count summary across both.\nNever invent emails. Max 20 lines."
+            }
+          ]
+        },
+        "simplify": true,
+        "builtInTools": {
+          "googleSearch": false,
+          "urlContext": false,
+          "codeExecution": false
+        },
+        "options": {
+          "maxOutputTokens": 1024,
+          "temperature": 0.3
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "id": "c4dd2ad8-98dd-41dc-a75a-6a98a77d08f6",
+      "name": "Send to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1340,
+        300
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "YOUR_TELEGRAM_USER_ID",
+        "text": "={{ String($json.content?.parts?.map(p => p.text).join(\"\") ?? $json.text ?? \"Briefing could not be generated today.\").slice(0, 4000).replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\").replace(/^#{1,6}\\s*(.+)$/gm, \"<b>$1</b>\").replace(/\\*\\*([^*\\n]+?)\\*\\*/g, \"<b>$1</b>\").replace(/^(\\s*)[*-]\\s+/gm, \"$1• \").replace(/\\*([^*\\n]+?)\\*/g, \"<i>$1</i>\") }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "cc96bdeb-06d4-4e62-ad8f-26ac16ca9374",
+      "name": "Fetch Unread 9321",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        480
+      ],
+      "parameters": {
+        "filters": {
+          "q": "is:unread newer_than:1d in:inbox -category:promotions -category:social",
+          "readStatus": "unread"
+        },
+        "limit": 20,
+        "operation": "getAll",
+        "resource": "message",
+        "returnAll": false,
+        "simple": true
+      },
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 9321"
+        }
+      }
+    },
+    {
+      "id": "55432cf7-0fc3-455e-a8ac-dfc9303ad928",
+      "name": "Collect 9321",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        900,
+        480
+      ],
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "emails"
+      }
+    }
+  ],
+  "pinData": {}
+}

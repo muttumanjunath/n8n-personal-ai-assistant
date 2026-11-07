@@ -1,0 +1,8 @@
+.env
+infra/.env
+infra/n8n_data/
+infra/pg_data/
+infra/backups/
+infra/searxng/settings.yml
+*.key
+*.pem

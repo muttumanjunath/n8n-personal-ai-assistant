@@ -1,0 +1,11 @@
+# Copy to settings.yml and set a random secret_key (openssl rand -hex 32)
+use_default_settings: true
+server:
+  secret_key: "CHANGE_ME"
+  limiter: false
+  image_proxy: false
+search:
+  safe_search: 0
+  formats:
+    - html
+    - json   # required: n8n's Web Search tool calls /search?format=json

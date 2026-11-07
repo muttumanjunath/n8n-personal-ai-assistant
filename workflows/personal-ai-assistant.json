@@ -1,0 +1,949 @@
+{
+  "name": "Personal AI Assistant",
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "connections": {
+    "Gemini Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat with Assistant": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Show Typing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Voice?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personal AI Assistant": {
+      "main": [
+        [
+          {
+            "node": "From Telegram?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From Telegram?": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chat Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Error Message": {
+      "main": [
+        [
+          {
+            "node": "From Telegram?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Voice?": {
+      "main": [
+        [
+          {
+            "node": "Download Voice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voice": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Voice": {
+      "main": [
+        [
+          {
+            "node": "Voice as Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice as Text": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Web Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Emails 2001": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Email 2001": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Draft 2001": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Emails 9321": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Email 9321": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Draft 9321": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "be9ab2b0-c53d-439e-b1da-ea6b54f26846",
+      "name": "Chat with Assistant",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are Muttu's personal AI assistant. Muttu is a Master's student in Advanced Industrial Engineering at TH Rosenheim, Germany, with a background in process engineering and AI/workflow automation (n8n, LLMs, RAG).\n\nCurrent date and time: {{ $now.setZone(\"Europe/Berlin\").toFormat(\"cccc, dd LLLL yyyy HH:mm\") }} (Europe/Berlin).\nChannel: {{ $('Normalize Input').item.json.source }}\n\nMuttu has TWO Gmail accounts, both important:\n- MAIN: main.account@gmail.com  -> tools 'Search Emails 2001', 'Read Email 2001', 'Create Draft 2001'\n- SECOND: second.account@gmail.com    -> tools 'Search Emails 9321', 'Read Email 9321', 'Create Draft 9321'\nRules: If Muttu asks about \"my emails\"/\"inbox\" without naming an account, check BOTH (search 2001 first, then 9321) and label results [2001] / [9321]. Read an email only with the Read tool of the SAME account its id came from. Drafts go to 2001 by default; when replying to an email, draft from the account that received it. You can NOT send emails; drafts wait in Gmail for Muttu.\n\nOther tools:\n- Generate Image: creates an AI image from an English prompt and sends it directly to Muttu's Telegram. Write a rich, specific prompt. After calling it, reply with one short line (the photo is already delivered). It may take ~10-20 seconds to appear.\n- Web Search: current/recent information from the internet. Cite source URLs.\n- Calculator: arithmetic.\n- Wikipedia: stable encyclopedic facts.\n\nImage rules: Never generate images of real, identifiable people (celebrities, athletes like MS Dhoni, politicians, or Muttu himself) or realistic fakes of real events. Politely decline and offer an alternative (e.g. a stylised scene without real people, or a fictional character).\n\nTool use rules (API calls are rate-limited):\n- Answer from your own knowledge for explanations, ideas, writing help and general questions.\n- Use Web Search for anything time-sensitive.\n- Max 3 tool calls per message.\n\nGuidelines:\n- Be direct and concise. No filler.\n- When summarising emails: account tag, sender, subject, one-line gist; urgent items (university, exams, deadlines, jobs, interviews, security alerts) first.\n- Never invent email content or search results.\n- Messages starting with [Voice message] were transcribed from speech; ignore small transcription errors.\n- Reply in the language Muttu writes in. Keep formatting simple: short paragraphs, '-' bullets, **bold** sparingly.",
+          "maxIterations": 5,
+          "enableStreaming": false
+        }
+      },
+      "id": "e9600873-271e-4780-82aa-02efb1fb5d51",
+      "name": "Personal AI Assistant",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        688,
+        208
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {
+          "maxOutputTokens": 4096,
+          "temperature": 0.4
+        }
+      },
+      "id": "2d09f1ca-422d-484b-88cc-8712b6ae9a44",
+      "name": "Gemini Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        528
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "d9d26630-01d8-4e1b-a469-fbdb91163086",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        704,
+        528
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "feb64bbc-e74a-4ccb-a530-a434502cb85e",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        864,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Setup\n1. Import `image-generator.json` first, publish it, copy its workflow ID into **Generate Image**.\n2. Create credentials: Telegram (BotFather token), Gemini API key, Gmail OAuth2 x2, Postgres, Cloudflare (Header Auth).\n3. **Telegram Message** -> Restrict to User IDs -> your numeric Telegram ID.\n4. Replace `YOUR_TELEGRAM_USER_ID` and the example email addresses.\n5. n8n needs a public HTTPS URL (WEBHOOK_URL) for the Telegram webhook.\n6. Publish.",
+        "height": 420,
+        "width": 360,
+        "color": 4
+      },
+      "id": "9dd299ac-e0cd-4429-a0bc-f4ddd21e987a",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "userIds": "YOUR_TELEGRAM_USER_ID"
+        }
+      },
+      "id": "236e71b0-c239-4b84-a87f-99996ea720af",
+      "name": "Telegram Message",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        240,
+        96
+      ],
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $json.message?.text ?? $json.chatInput ?? '' }}"
+            },
+            {
+              "id": "a2",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $json.message?.chat?.id ? 'tg-' + $json.message.chat.id : $json.sessionId }}"
+            },
+            {
+              "id": "a3",
+              "name": "source",
+              "type": "string",
+              "value": "={{ $json.message ? 'telegram' : 'chat' }}"
+            },
+            {
+              "id": "a4",
+              "name": "telegramChatId",
+              "type": "string",
+              "value": "={{ $json.message?.chat?.id ?? '' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a3016ac0-ccde-4864-a8f8-0413d13ed72c",
+      "name": "Normalize Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $('Normalize Input').item.json.source }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "telegram"
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "82960e02-5c47-4fa4-82b4-a0d2815845e1",
+      "name": "From Telegram?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalize Input').item.json.telegramChatId }}",
+        "text": "={{ String($json.output || '').slice(0, 4000).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/^#{1,6}\\s*(.+)$/gm, '<b>$1</b>').replace(/\\*\\*([^*\\n]+?)\\*\\*/g, '<b>$1</b>').replace(/^(\\s*)[*-]\\s+/gm, '$1• ').replace(/\\*([^*\\n]+?)\\*/g, '<i>$1</i>').replace(/`([^`\\n]+)`/g, '<code>$1</code>') }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "3d0377fb-6d4f-4ee5-a908-a65dc77789d4",
+      "name": "Send Telegram Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        96
+      ],
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "output",
+              "type": "string",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "85d271a4-1329-41c8-ae4d-ceb7e64fde8f",
+      "name": "Chat Reply",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1248,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Search the MAIN Gmail inbox main.account@gmail.com with Gmail search syntax. Returns up to 10 emails with id, From, Subject, snippet.",
+        "operation": "getAll",
+        "limit": 10,
+        "filters": {
+          "q": "={{ $fromAI('query', 'Gmail search query, e.g. is:unread newer_than:1d or from:someone@x.com', 'string') }}",
+          "readStatus": "both"
+        }
+      },
+      "id": "a8f7dbfa-4639-4c3a-941e-75d166ced736",
+      "name": "Search Emails 2001",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        528
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 2001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Read the full content of one email from main.account@gmail.com by its id (id from Search Emails 2001 only).",
+        "operation": "get",
+        "messageId": "={{ $fromAI('messageId', 'The Gmail message id returned by Search Emails', 'string') }}",
+        "simple": false,
+        "options": {}
+      },
+      "id": "220a35bd-8831-4b2e-bae2-f084504dad0a",
+      "name": "Read Email 2001",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1184,
+        528
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 2001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Create a Gmail draft in main.account@gmail.com (does not send). Default account for drafts.",
+        "resource": "draft",
+        "subject": "={{ $fromAI('subject', 'Email subject', 'string') }}",
+        "message": "={{ $fromAI('message', 'Full plain-text email body', 'string') }}",
+        "options": {
+          "sendTo": "={{ $fromAI('sendTo', 'Recipient email address(es), comma-separated', 'string') }}"
+        }
+      },
+      "id": "9011d844-7ffc-4528-a3d2-d29bc31c3e02",
+      "name": "Create Draft 2001",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        528
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 2001"
+        }
+      }
+    },
+    {
+      "id": "bb5e77df-fa78-4155-a6c7-43498b1d92d8",
+      "name": "Build Error Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        400
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "output",
+              "type": "string",
+              "value": "={{ (() => { const raw = $json.error; const m = String((raw && (raw.message || raw.description)) || raw || 'Unknown error'); let hint = 'Please try again in a moment.'; if (/429|quota|too many|rate/i.test(m)) hint = 'Gemini free limit reached. Wait about 1 minute and try again (daily limit resets ~09:00).'; else if (/invalid_grant|unauthori|401|403|token/i.test(m)) hint = 'A login expired (probably Gmail). Open n8n, Search Emails node, reconnect the Gmail credential.'; else if (/404|not found/i.test(m)) hint = 'Model or resource not found. Check the Gemini Model setting in n8n.'; else if (/timeout|ETIMEDOUT|ECONNRESET/i.test(m)) hint = 'A service did not respond in time. Try again.'; return '⚠️ Something went wrong.\\n' + hint + '\\n\\nDetails: ' + m.slice(0, 300); })() }}"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "mode": "manual"
+      }
+    },
+    {
+      "id": "2feaf23f-58ae-4e1e-b716-9271721f5951",
+      "name": "Show Typing",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        0
+      ],
+      "parameters": {
+        "action": "typing",
+        "chatId": "={{ $json.message.chat.id }}",
+        "operation": "sendChatAction",
+        "resource": "message"
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "f963ac8f-1f2e-4460-9ac2-2cd990c2fd00",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.4,
+      "position": [
+        544,
+        528
+      ],
+      "parameters": {
+        "contextWindowLength": 15,
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Normalize Input').item.json.sessionId }}",
+        "tableName": "n8n_chat_histories"
+      },
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "id": "abf11a18-b321-4d02-b98f-78b419d2bbe0",
+      "name": "Is Voice?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -176
+      ],
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $json.message?.voice?.file_id ?? $json.message?.audio?.file_id ?? '' }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          }
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c6add087-a0e2-4119-b1db-0f060e98bf7d",
+      "name": "Download Voice",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -272
+      ],
+      "parameters": {
+        "additionalFields": {
+          "mimeType": "audio/ogg"
+        },
+        "download": true,
+        "fileId": "={{ $json.message.voice?.file_id ?? $json.message.audio?.file_id }}",
+        "operation": "get",
+        "resource": "file"
+      },
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "75dc2226-3ae7-4ff5-8b4d-d3605415b03c",
+      "name": "Transcribe Voice",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -272
+      ],
+      "parameters": {
+        "binaryPropertyName": "data",
+        "inputType": "binary",
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-3.5-flash-lite"
+        },
+        "operation": "transcribe",
+        "options": {},
+        "resource": "audio",
+        "simplify": true
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "id": "1e2f8aa6-c9b9-4d32-94e0-1ff6b6f5273a",
+      "name": "Voice as Text",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -272
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "t1",
+              "name": "message",
+              "type": "object",
+              "value": "={{ { ...$('Telegram Message').item.json.message, text: '[Voice message] ' + String($json.content?.parts?.[0]?.text ?? $json.text ?? $json.transcription ?? '').trim() } }}"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "mode": "manual",
+        "options": {}
+      }
+    },
+    {
+      "id": "46e5e464-f52e-4801-827b-2c0f58ca2912",
+      "name": "Web Search",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        1504,
+        528
+      ],
+      "parameters": {
+        "dataField": "results",
+        "descriptionType": "manual",
+        "fields": "title,url,content,publishedDate",
+        "fieldsToInclude": "selected",
+        "method": "GET",
+        "optimizeResponse": true,
+        "options": {
+          "timeout": 15000
+        },
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $fromAI('query', 'Search engine query, short keywords, include place/year if relevant', 'string') }}"
+            },
+            {
+              "name": "format",
+              "value": "json"
+            },
+            {
+              "name": "safesearch",
+              "value": "0"
+            }
+          ]
+        },
+        "responseType": "json",
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "toolDescription": "Search the internet for current or recent information (news, events, prices, opening hours, versions, anything that may have changed). Input: short search keywords. Returns result titles, URLs and snippets; cite the URLs.",
+        "url": "http://searxng:8080/search"
+      }
+    },
+    {
+      "id": "f47c3f56-7266-4a70-bb99-436c56a0bcf7",
+      "name": "Search Emails 9321",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        720
+      ],
+      "parameters": {
+        "descriptionType": "manual",
+        "filters": {
+          "q": "={{ $fromAI('query', 'Gmail search query, e.g. is:unread newer_than:1d or from:someone@x.com', 'string') }}",
+          "readStatus": "both"
+        },
+        "limit": 10,
+        "operation": "getAll",
+        "toolDescription": "Search the SECOND Gmail inbox second.account@gmail.com with Gmail search syntax. Returns up to 10 emails with id, From, Subject, snippet."
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 9321"
+        }
+      }
+    },
+    {
+      "id": "22d0bb4c-aeba-4328-9f98-d60ad990d9a9",
+      "name": "Read Email 9321",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1184,
+        720
+      ],
+      "parameters": {
+        "descriptionType": "manual",
+        "messageId": "={{ $fromAI('messageId', 'The Gmail message id returned by Search Emails 9321', 'string') }}",
+        "operation": "get",
+        "options": {},
+        "simple": false,
+        "toolDescription": "Read the full content of one email from second.account@gmail.com by its id (id from Search Emails 9321 only)."
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 9321"
+        }
+      }
+    },
+    {
+      "id": "72efcddf-1196-47f5-90f4-9eaa56a45033",
+      "name": "Create Draft 9321",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        720
+      ],
+      "parameters": {
+        "descriptionType": "manual",
+        "message": "={{ $fromAI('message', 'Full plain-text email body', 'string') }}",
+        "options": {
+          "sendTo": "={{ $fromAI('sendTo', 'Recipient email address(es), comma-separated', 'string') }}"
+        },
+        "resource": "draft",
+        "subject": "={{ $fromAI('subject', 'Email subject', 'string') }}",
+        "toolDescription": "Create a Gmail draft in second.account@gmail.com (does not send). Use only when Muttu asks for the 9321 account or when replying to an email that arrived there."
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail 9321"
+        }
+      }
+    },
+    {
+      "id": "69422d8c-54ad-4fcc-8383-99e7432419d3",
+      "name": "Generate Image",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        528
+      ],
+      "parameters": {
+        "description": "Generate an AI image from a text prompt and send it to Muttu on Telegram as a photo. Use for illustrations, posters, concept art, logos, wallpapers. NEVER use for real, identifiable people (celebrities, politicians, athletes, Muttu himself) or photo-realistic fakes of real events.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "cachedResultName": "Image Generator (Cloudflare + fallback)",
+          "mode": "id",
+          "value": "IMAGE_GENERATOR_WORKFLOW_ID"
+        },
+        "workflowInputs": {
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false,
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "schema": [
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "prompt",
+              "id": "prompt",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "caption",
+              "id": "caption",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "chatId",
+              "id": "chatId",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "value": {
+            "caption": "={{ $fromAI('caption', 'Very short caption for the image, max 15 words', 'string') }}",
+            "chatId": "={{ $('Normalize Input').item.json.telegramChatId || 'YOUR_TELEGRAM_USER_ID' }}",
+            "prompt": "={{ $fromAI('prompt', 'Detailed English image prompt: subject, setting, style, lighting, composition. No real people.', 'string') }}"
+          }
+        }
+      }
+    }
+  ],
+  "pinData": {}
+}
