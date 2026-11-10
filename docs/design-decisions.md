@@ -15,6 +15,9 @@ Gemini's built-in Google Search grounding returned `429 RESOURCE_EXHAUSTED` on t
 ### Postgres memory
 Simple (in-RAM) memory is wiped on every container restart. Postgres Chat Memory in the same Compose network fixed that with one credential.
 
+### Memory trimming (Gemini 400 fix)
+A sliding memory window can cut the history in the middle of a tool exchange, so the oldest loaded message becomes an AI *function call* with no user turn before it. Gemini rejects that with `400: function call turn must come immediately after a user turn`, and once it happens every following message fails. Fix: a **Trim Memory** Postgres step runs before the agent and deletes everything older than the last 6 *human* messages for that session, so the stored history always starts with a user turn. The memory window (20 interactions) is larger than what remains, so the loaded history is never cut mid-exchange.
+
 ### Telegram formatting
 LLMs output `**bold**`, which Telegram's legacy Markdown rejects ("can't parse entities"). Replies are HTML-escaped and converted (headings/bold → `<b>`, italics → `<i>`, bullets → `•`) and sent with `parse_mode=HTML`.
 

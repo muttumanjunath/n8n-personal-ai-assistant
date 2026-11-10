@@ -14,7 +14,7 @@ It reads and drafts emails across **two Gmail accounts**, searches the web throu
 |---|---|
 | 💬 **Telegram chat** | Telegram webhook → n8n AI Agent → reply (restricted to the owner's Telegram user ID) |
 | 🎤 **Voice messages** | Voice note downloaded → transcribed by Gemini → handled like typed text |
-| 🧠 **Persistent memory** | Postgres Chat Memory (last 15 messages per chat), survives restarts |
+| 🧠 **Persistent memory** | Postgres Chat Memory, auto-trimmed to the last 6 user turns so Gemini never gets a broken history; survives restarts |
 | 📧 **Two Gmail accounts** | Search, read and **draft** (never sends) for each account; results tagged per account |
 | 🔎 **Web search** | Self-hosted **SearXNG** (Google, Bing, DDG, …), no API key, no limits |
 | 🎨 **Image generation** | **Cloudflare Workers AI FLUX-1-schnell** (free daily quota) with automatic **Pollinations.ai** fallback |
@@ -37,7 +37,7 @@ flowchart LR
         N8N --> SX[SearXNG<br/>web search]
     end
 
-    N8N -->|LLM + transcription| GEM[Google Gemini<br/>flash-lite]
+    N8N -->|LLM + transcription| GEM[Google Gemini<br/>3.1 flash-lite]
     N8N -->|OAuth2| GM1[Gmail main]
     N8N -->|OAuth2| GM2[Gmail second]
     N8N -->|FLUX| CF[Cloudflare Workers AI]
@@ -55,7 +55,7 @@ flowchart LR
     V -->|yes| D[Download Voice] --> TR[Transcribe Voice<br/>Gemini] --> VT[Voice as Text] --> NI
     V -->|no| NI[Normalize Input]
     C[n8n Chat] --> NI
-    NI --> A[AI Agent<br/>Gemini + Postgres memory]
+    NI --> TM[Trim Memory<br/>Postgres] --> A[AI Agent<br/>Gemini + Postgres memory]
     A -->|ok| R{From Telegram?}
     A -->|error| E[Build Error Message] --> R
     R -->|yes| ST[Send Telegram Reply]
@@ -75,7 +75,7 @@ flowchart LR
 
 ```
 workflows/
-  personal-ai-assistant.json   # main Telegram agent (26 nodes)
+  personal-ai-assistant.json   # main Telegram agent (27 nodes)
   morning-briefing.json        # daily 07:30 briefing
   image-generator.json         # sub-workflow: Cloudflare FLUX -> Telegram, Pollinations fallback
 infra/

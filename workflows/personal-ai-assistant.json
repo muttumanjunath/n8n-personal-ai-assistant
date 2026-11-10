@@ -69,7 +69,7 @@
       "main": [
         [
           {
-            "node": "Personal AI Assistant",
+            "node": "Trim Memory",
             "type": "main",
             "index": 0
           }
@@ -272,6 +272,17 @@
           }
         ]
       ]
+    },
+    "Trim Memory": {
+      "main": [
+        [
+          {
+            "node": "Personal AI Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "nodes": [
@@ -293,7 +304,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.chatInput }}",
+        "text": "={{ $('Normalize Input').item.json.chatInput }}",
         "options": {
           "systemMessage": "=You are Muttu's personal AI assistant. Muttu is a Master's student in Advanced Industrial Engineering at TH Rosenheim, Germany, with a background in process engineering and AI/workflow automation (n8n, LLMs, RAG).\n\nCurrent date and time: {{ $now.setZone(\"Europe/Berlin\").toFormat(\"cccc, dd LLLL yyyy HH:mm\") }} (Europe/Berlin).\nChannel: {{ $('Normalize Input').item.json.source }}\n\nMuttu has TWO Gmail accounts, both important:\n- MAIN: main.account@gmail.com  -> tools 'Search Emails 2001', 'Read Email 2001', 'Create Draft 2001'\n- SECOND: second.account@gmail.com    -> tools 'Search Emails 9321', 'Read Email 9321', 'Create Draft 9321'\nRules: If Muttu asks about \"my emails\"/\"inbox\" without naming an account, check BOTH (search 2001 first, then 9321) and label results [2001] / [9321]. Read an email only with the Read tool of the SAME account its id came from. Drafts go to 2001 by default; when replying to an email, draft from the account that received it. You can NOT send emails; drafts wait in Gmail for Muttu.\n\nOther tools:\n- Generate Image: creates an AI image from an English prompt and sends it directly to Muttu's Telegram. Write a rich, specific prompt. After calling it, reply with one short line (the photo is already delivered). It may take ~10-20 seconds to appear.\n- Web Search: current/recent information from the internet. Cite source URLs.\n- Calculator: arithmetic.\n- Wikipedia: stable encyclopedic facts.\n\nImage rules: Never generate images of real, identifiable people (celebrities, athletes like MS Dhoni, politicians, or Muttu himself) or realistic fakes of real events. Politely decline and offer an alternative (e.g. a stylised scene without real people, or a fictional character).\n\nTool use rules (API calls are rate-limited):\n- Answer from your own knowledge for explanations, ideas, writing help and general questions.\n- Use Web Search for anything time-sensitive.\n- Max 3 tool calls per message.\n\nGuidelines:\n- Be direct and concise. No filler.\n- When summarising emails: account tag, sender, subject, one-line gist; urgent items (university, exams, deadlines, jobs, interviews, security alerts) first.\n- Never invent email content or search results.\n- Messages starting with [Voice message] were transcribed from speech; ignore small transcription errors.\n- Reply in the language Muttu writes in. Keep formatting simple: short paragraphs, '-' bullets, **bold** sparingly.",
           "maxIterations": 5,
@@ -312,7 +323,7 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-3.5-flash-lite",
+        "modelName": "models/gemini-3.1-flash-lite",
         "options": {
           "maxOutputTokens": 4096,
           "temperature": 0.4
@@ -645,7 +656,7 @@
         528
       ],
       "parameters": {
-        "contextWindowLength": 15,
+        "contextWindowLength": 20,
         "sessionIdType": "customKey",
         "sessionKey": "={{ $('Normalize Input').item.json.sessionId }}",
         "tableName": "n8n_chat_histories"
@@ -941,6 +952,31 @@
             "chatId": "={{ $('Normalize Input').item.json.telegramChatId || 'YOUR_TELEGRAM_USER_ID' }}",
             "prompt": "={{ $fromAI('prompt', 'Detailed English image prompt: subject, setting, style, lighting, composition. No real people.', 'string') }}"
           }
+        }
+      }
+    },
+    {
+      "id": "8971d657-467a-4a58-9f5d-d18a58090933",
+      "name": "Trim Memory",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        560,
+        400
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM n8n_chat_histories\nWHERE session_id = $1\n  AND id < (\n    SELECT COALESCE(MIN(id), 0) FROM (\n      SELECT id FROM n8n_chat_histories\n      WHERE session_id = $1 AND message->>'type' = 'human'\n      ORDER BY id DESC LIMIT 6\n    ) recent\n  );",
+        "options": {
+          "queryReplacement": "={{ $json.sessionId }}"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
         }
       }
     }
