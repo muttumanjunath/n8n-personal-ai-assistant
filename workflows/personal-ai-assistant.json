@@ -308,8 +308,8 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.5,
       "position": [
-        240,
-        304
+        0,
+        300
       ]
     },
     {
@@ -328,8 +328,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        688,
-        208
+        1880,
+        100
       ],
       "onError": "continueErrorOutput"
     },
@@ -346,8 +346,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.2,
       "position": [
-        384,
-        528
+        1560,
+        420
       ],
       "credentials": {
         "googlePalmApi": {
@@ -362,8 +362,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolCalculator",
       "typeVersion": 1,
       "position": [
-        704,
-        528
+        1980,
+        420
       ]
     },
     {
@@ -373,15 +373,15 @@
       "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
       "typeVersion": 1,
       "position": [
-        864,
-        528
+        2120,
+        420
       ]
     },
     {
       "parameters": {
         "content": "## Setup\n1. Import `image-generator.json` first, publish it, copy its workflow ID into **Generate Image**.\n2. Create credentials: Telegram (BotFather token), Gemini API key, Gmail OAuth2 x2, Postgres, Cloudflare (Header Auth).\n3. **Telegram Message** -> Restrict to User IDs -> your numeric Telegram ID.\n4. Replace `YOUR_TELEGRAM_USER_ID` and the example email addresses.\n5. n8n needs a public HTTPS URL (WEBHOOK_URL) for the Telegram webhook.\n6. Publish.",
-        "height": 420,
-        "width": 360,
+        "height": 440,
+        "width": 400,
         "color": 4
       },
       "id": "9dd299ac-e0cd-4429-a0bc-f4ddd21e987a",
@@ -389,8 +389,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        48
+        -480,
+        -260
       ]
     },
     {
@@ -407,8 +407,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.5,
       "position": [
-        240,
-        96
+        0,
+        0
       ],
       "credentials": {
         "telegramApi": {
@@ -453,8 +453,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        448,
-        208
+        1260,
+        100
       ]
     },
     {
@@ -486,8 +486,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        208
+        2600,
+        100
       ]
     },
     {
@@ -504,8 +504,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1248,
-        96
+        2860,
+        0
       ],
       "credentials": {
         "telegramApi": {
@@ -532,8 +532,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1248,
-        320
+        2860,
+        220
       ]
     },
     {
@@ -552,8 +552,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        528
+        1700,
+        620
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -575,8 +575,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1184,
-        528
+        1840,
+        620
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -600,8 +600,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1344,
-        528
+        1980,
+        620
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -615,8 +615,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1024,
-        400
+        2300,
+        220
       ],
       "parameters": {
         "assignments": {
@@ -639,8 +639,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        448,
-        0
+        260,
+        -220
       ],
       "parameters": {
         "action": "typing",
@@ -661,8 +661,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.4,
       "position": [
-        544,
-        528
+        1840,
+        420
       ],
       "parameters": {
         "contextWindowLength": 20,
@@ -682,8 +682,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        448,
-        -176
+        260,
+        0
       ],
       "parameters": {
         "conditions": {
@@ -715,8 +715,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        672,
-        -272
+        520,
+        -220
       ],
       "parameters": {
         "additionalFields": {
@@ -739,8 +739,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1.2,
       "position": [
-        896,
-        -272
+        760,
+        -220
       ],
       "parameters": {
         "binaryPropertyName": "data",
@@ -770,8 +770,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1120,
-        -272
+        1000,
+        -220
       ],
       "parameters": {
         "assignments": {
@@ -795,8 +795,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.5,
       "position": [
-        1504,
-        528
+        2260,
+        420
       ],
       "parameters": {
         "dataField": "results",
@@ -837,8 +837,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        720
+        2120,
+        620
       ],
       "parameters": {
         "descriptionType": "manual",
@@ -862,8 +862,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1184,
-        720
+        2260,
+        620
       ],
       "parameters": {
         "descriptionType": "manual",
@@ -885,8 +885,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.2,
       "position": [
-        1344,
-        720
+        2400,
+        620
       ],
       "parameters": {
         "descriptionType": "manual",
@@ -910,8 +910,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1664,
-        528
+        2400,
+        420
       ],
       "parameters": {
         "description": "Generate an AI image from a text prompt and send it to Muttu on Telegram as a photo. Use for illustrations, posters, concept art, logos, wallpapers. NEVER use for real, identifiable people (celebrities, politicians, athletes, Muttu himself) or photo-realistic fakes of real events.",
@@ -970,8 +970,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.8,
       "position": [
-        560,
-        400
+        1500,
+        100
       ],
       "parameters": {
         "operation": "executeQuery",
@@ -995,8 +995,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.2,
       "position": [
-        400,
-        640
+        1700,
+        420
       ],
       "parameters": {
         "modelName": "models/gemini-3.1-flash-lite",
