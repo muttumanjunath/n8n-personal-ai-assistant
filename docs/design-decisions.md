@@ -9,6 +9,9 @@ The first version ran in Docker on a laptop, which meant the bot was offline whe
 ### Gemini flash-lite + strict tool budget
 Free-tier rate limits are the main constraint: about 5 RPM on `flash` versus more on `flash-lite`. An early version burned 8 LLM calls on one question by calling Wikipedia per item. Fixes: a "max N tool calls" rule in the system prompt, `maxIterations` capped, and retry on the model node.
 
+### Fallback model for speed
+On the free tier a rate-limited model doesn't fail fast; the client retries with backoff, so replies took 16 to 60+ seconds. The agent now has a **fallback model** on a different model ID (separate free quota), and node-level retries on the primary are off, so a limit falls through to the second model instead of waiting. Measured: `gemini-3.1-flash-lite` about 16 s for a trivial reply versus about 1.5 s on `gemini-3.5-flash-lite`, so 3.5 is primary.
+
 ### Web search: SearXNG, not Gemini grounding
 Gemini's built-in Google Search grounding returned `429 RESOURCE_EXHAUSTED` on the free tier. A self-hosted SearXNG container (JSON format enabled) gives unlimited, key-less search; the HTTP Request tool's *optimize response* keeps only `title, url, content, publishedDate` to save tokens.
 

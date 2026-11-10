@@ -37,7 +37,7 @@ flowchart LR
         N8N --> SX[SearXNG<br/>web search]
     end
 
-    N8N -->|LLM + transcription| GEM[Google Gemini<br/>3.1 flash-lite]
+    N8N -->|LLM + transcription| GEM[Google Gemini<br/>3.5 flash-lite<br/>+ 3.1 fallback]
     N8N -->|OAuth2| GM1[Gmail main]
     N8N -->|OAuth2| GM2[Gmail second]
     N8N -->|FLUX| CF[Cloudflare Workers AI]
@@ -75,7 +75,7 @@ flowchart LR
 
 ```
 workflows/
-  personal-ai-assistant.json   # main Telegram agent (27 nodes)
+  personal-ai-assistant.json   # main Telegram agent (28 nodes)
   morning-briefing.json        # daily 07:30 briefing
   image-generator.json         # sub-workflow: Cloudflare FLUX -> Telegram, Pollinations fallback
 infra/
