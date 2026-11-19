@@ -6,6 +6,10 @@ It reads and drafts emails across **two Gmail accounts**, searches the web throu
 
 > Built by [Muttu Manjunath](https://www.linkedin.com/in/muttu-manjunath-8546391ab), M.Eng. student in Advanced Industrial Engineering at TH Rosenheim.
 
+![Architecture](docs/images/architecture.png)
+
+**Highlights:** 3 n8n workflows · 43 nodes · 9 agent tools · 4 Docker containers · €0/month · built and deployed in one week.
+
 ---
 
 ## ✨ Features
@@ -21,7 +25,8 @@ It reads and drafts emails across **two Gmail accounts**, searches the web throu
 | 🌅 **Morning briefing** | Daily 07:30: local weather (Open-Meteo) + important unread mail from both inboxes |
 | ⚠️ **Error alerts** | Failures are explained in Telegram (rate limit, expired login, …) instead of silence |
 | ⌨️ **UX touches** | "typing…" indicator, Markdown → Telegram HTML conversion, 4,000-char safety cap |
-| 🛡️ **Guardrails** | No email sending, no images of real people, max tool calls per message |
+| 🛡️ **Guardrails** | No email sending, no images of real people, max tool calls per message, never describes an inbox it did not search |
+| ⚡ **Model fallback** | Gemini 3.5 flash-lite primary, 3.1 flash-lite fallback with a separate free quota |
 
 ---
 
@@ -48,6 +53,8 @@ flowchart LR
 
 ### Main workflow: `Personal AI Assistant`
 
+![Assistant flow](docs/images/assistant-flow.png)
+
 ```mermaid
 flowchart LR
     T[Telegram Message] --> TY[Show Typing]
@@ -69,6 +76,10 @@ flowchart LR
     A -.tools.- WK[Wikipedia]
 ```
 
+### Image generator sub-workflow
+
+![Image generator flow](docs/images/image-generator-flow.png)
+
 ---
 
 ## 📁 Repository structure
@@ -86,6 +97,7 @@ infra/
 docs/
   setup.md                     # full step-by-step deployment guide
   design-decisions.md          # why things are built this way + lessons learned
+  images/                      # architecture and workflow diagrams
 ```
 
 ---
@@ -135,6 +147,24 @@ The full guide, including the Oracle Cloud VM, Google OAuth and Cloudflare setup
 ## 🛠️ Tech stack
 
 `n8n` · `Docker Compose` · `Postgres` · `SearXNG` · `ngrok` · `Google Gemini` · `Cloudflare Workers AI (FLUX)` · `Telegram Bot API` · `Gmail API (OAuth2)` · `Oracle Cloud (ARM)`
+
+## 🧠 Lessons learned
+
+- **Free-tier rate limits shape the design:** a tool budget, a fallback model and no node-level retries cut reply time from 16-60 s to about 1.5 s.
+- **Sliding memory windows can break LLM APIs:** Gemini rejects a history that starts with a tool call, so memory is trimmed to start at a user turn.
+- **Agents hallucinate tool results:** an explicit rule stops the bot from describing an inbox it never searched.
+- **Google OAuth apps in Testing mode expire tokens after 7 days:** publish the app before connecting accounts.
+
+Details in [docs/design-decisions.md](docs/design-decisions.md).
+
+## 📅 Changelog
+
+| Date | Change |
+|---|---|
+| 2026-11-19 | Hallucination guardrail for inbox questions; diagrams added |
+| 2026-11-10 | Memory trimming (Gemini 400 fix), fallback model, clean canvas layout |
+| 2026-11-07 | Moved to Oracle Cloud; Postgres memory, voice, 2× Gmail, web search, images, morning briefing |
+| 2026-11-06 | First version: Telegram + Gemini + Calculator + Wikipedia |
 
 ## 📄 License
 

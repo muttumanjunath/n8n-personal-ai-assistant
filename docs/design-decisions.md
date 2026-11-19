@@ -32,3 +32,9 @@ Separate search/read/draft tools per account with explicit names (`â€¦ 2001`, `â
 
 ### Error UX
 The agent's error output feeds a *Build Error Message* node that maps raw errors (429, invalid_grant, 404, timeout) to human hints and replies on the same channel, so the bot never fails silently.
+
+### Hallucinated tool results
+After both Gmail logins expired, the bot still answered "both inboxes are quiet" without calling any Gmail tool. A system-prompt rule now forbids describing an inbox unless that account's Search tool ran successfully in the same message, and tells the agent to name the failing account when a Gmail tool errors.
+
+### Google OAuth token expiry
+Tokens issued while the Google OAuth app is in *Testing* expire after 7 days, even if the app is published later. Publish the app first, then connect the accounts; if tokens were issued in Testing, remove the app at myaccount.google.com/permissions and reconnect.
