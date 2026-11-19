@@ -96,6 +96,7 @@ infra/
   backup.sh                    # nightly backup, 7-day retention
 docs/
   setup.md                     # full step-by-step deployment guide
+  technical-documentation.md   # every node and its configuration
   design-decisions.md          # why things are built this way + lessons learned
   images/                      # architecture and workflow diagrams
 ```
@@ -119,7 +120,7 @@ Then in n8n:
 4. Replace the placeholders: `YOUR_TELEGRAM_USER_ID`, `YOUR_CLOUDFLARE_ACCOUNT_ID`, `IMAGE_GENERATOR_WORKFLOW_ID`, example email addresses.
 5. Publish.
 
-The full guide, including the Oracle Cloud VM, Google OAuth and Cloudflare setup, is in **[docs/setup.md](docs/setup.md)**.
+The full guide, including the Oracle Cloud VM, Google OAuth and Cloudflare setup, is in **[docs/setup.md](docs/setup.md)**. Every node and its configuration is documented in **[docs/technical-documentation.md](docs/technical-documentation.md)**.
 
 ---
 
@@ -161,7 +162,7 @@ Details in [docs/design-decisions.md](docs/design-decisions.md).
 
 | Date | Change |
 |---|---|
-| 2026-11-19 | Hallucination guardrail for inbox questions; diagrams added |
+| 2026-11-19 | Hallucination guardrail for inbox questions; diagrams; full technical documentation |
 | 2026-11-10 | Memory trimming (Gemini 400 fix), fallback model, clean canvas layout |
 | 2026-11-07 | Moved to Oracle Cloud; Postgres memory, voice, 2× Gmail, web search, images, morning briefing |
 | 2026-11-06 | First version: Telegram + Gemini + Calculator + Wikipedia |
